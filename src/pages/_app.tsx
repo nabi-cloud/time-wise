@@ -1,6 +1,7 @@
 import * as React from "react"
 import "@/styles/globals.css";
 import { format } from "date-fns"
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
@@ -23,12 +24,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import { cn } from "@/lib/utils"
 import { Geist } from "next/font/google";
@@ -41,10 +43,75 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+type Checked = DropdownMenuCheckboxItemProps["checked"]
+
+interface TimeEntry {
+  date: string;
+  ministryHours: number;
+  bibleStudies: number;
+  activities: string[];
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
   const [ministryHours, setMinistryHours] = React.useState(0);
   const [bibleStudies, setBibleStudies] = React.useState(0);
+  const [houseToHouse, setHouseToHouse] = React.useState<Checked>(false)
+  const [bibleStudy, setBibleStudy] = React.useState<Checked>(false)
+  const [returnVisit, setReturnVisit] = React.useState<Checked>(false)
+  const [cartWitnessing, setCartWitnessing] = React.useState<Checked>(false)
+  const [letterWriting, setLetterWriting] = React.useState<Checked>(false)
+  const [informalWitnessing, setInformalWitnessing] = React.useState<Checked>(false)
+  const [others, setOthers] = React.useState<Checked>(false)
+  const [open, setOpen] = React.useState(false)
+
+  const handleSubmit = () => {
+    if (!date || typeof window === 'undefined') return;
+
+    const activities = [
+      houseToHouse && 'House to House',
+      bibleStudy && 'Bible Study',
+      returnVisit && 'Return Visit',
+      cartWitnessing && 'Cart Witnessing',
+      letterWriting && 'Letter Writing',
+      informalWitnessing && 'Informal Witnessing',
+      others && 'Others'
+    ].filter(Boolean) as string[];
+
+    const entry: TimeEntry = {
+      date: date.toISOString(),
+      ministryHours,
+      bibleStudies,
+      activities
+    };
+
+    try {
+      // Get existing entries
+      const existingEntriesStr = localStorage.getItem('timeEntries');
+      const existingEntries: TimeEntry[] = existingEntriesStr ? JSON.parse(existingEntriesStr) : [];
+
+      // Add new entry
+      const updatedEntries = [...existingEntries, entry];
+      localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
+
+      // Reset form
+      setMinistryHours(0);
+      setBibleStudies(0);
+      setHouseToHouse(false);
+      setBibleStudy(false);
+      setReturnVisit(false);
+      setCartWitnessing(false);
+      setLetterWriting(false);
+      setInformalWitnessing(false);
+      setOthers(false);
+      setOpen(false);
+
+      // Force reload entries in daily page
+      window.dispatchEvent(new Event('storage'));
+    } catch (error) {
+      console.error('Error saving entry:', error);
+    }
+  };
 
   return (
     <SidebarProvider className={`${geistSans.variable} min-h-screen font-[family-name:var(--font-geist-sans)]`}>
@@ -64,7 +131,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <Moon size={18} />
               </button>
             </div>
-            <Drawer>
+            <Drawer open={open} onOpenChange={setOpen}>
               <DrawerTrigger asChild>
                 <Button className="h-7 w-24 text-xs font">
                   <Plus color="#ffffff" /> Add Time
@@ -79,11 +146,11 @@ export default function App({ Component, pageProps }: AppProps) {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[280px] justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal",
                             !date && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon />
+                          <CalendarIcon className="mr-2 h-4 w-4" />
                           {date ? format(date, "PPP") : <span>Pick a date</span>}
                         </Button>
                       </PopoverTrigger>
@@ -97,39 +164,76 @@ export default function App({ Component, pageProps }: AppProps) {
                       </PopoverContent>
                     </Popover>
                     {/* Multiselect for Ministry Avenue */}
-                    <Select multiple>
-                      <SelectTrigger className="w-[280px] text-center">
-                        <SelectValue placeholder="Type of Ministry" />
-                      </SelectTrigger>
-                      <SelectContent className={geistSans.className}>
-                        <SelectItem value="house">House to House</SelectItem>
-                        <SelectItem value="study">Bible Study</SelectItem>
-                        <SelectItem value="rv">Return Visit</SelectItem>
-                        <SelectItem value="cart">Cart Witnessing</SelectItem>
-                        <SelectItem value="letter">Letter Writing</SelectItem>
-                        <SelectItem value="informal">Informal Witnessing</SelectItem>
-                        <SelectItem value="others">Others</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <DropdownMenu >
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">Type of Ministry</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className={geistSans.className + " w-[280]"}>
+                        <DropdownMenuLabel>Select items that apply</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuCheckboxItem
+                          checked={houseToHouse}
+                          onCheckedChange={setHouseToHouse}
+                        >
+                          House to House
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={bibleStudy}
+                          onCheckedChange={setBibleStudy}
+                        >
+                          Bible Study
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={returnVisit}
+                          onCheckedChange={setReturnVisit}
+                        >
+                          Return Visit
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={cartWitnessing}
+                          onCheckedChange={setCartWitnessing}
+                        >
+                          Cart Witnessing
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={letterWriting}
+                          onCheckedChange={setLetterWriting}
+                        >
+                          Letter Writing
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={informalWitnessing}
+                          onCheckedChange={setInformalWitnessing}
+                        >
+                          Informal Witnessing
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                          checked={others}
+                          onCheckedChange={setOthers}
+                        >
+                          Others
+                        </DropdownMenuCheckboxItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </DrawerHeader>
-                  <div className="p-4 pb-4 space-y-4">
+                  <div className="p-4">
                     {/* Hours in the Ministry */}
                     <div className="flex items-center justify-center space-x-2">
                       <Button
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8 rounded-full"
+                        className="h-8 w-8 shrink-0 rounded-full"
                         onClick={() => setMinistryHours(Math.max(0, ministryHours - 1))}
                         disabled={ministryHours <= 0}
                       >
-                        <Minus />
+                        <Minus className="h-4 w-4" />
                         <span className="sr-only">Decrease</span>
                       </Button>
                       <div className="flex-1 text-center">
-                        <div className="text-xl font-bold tracking-tighter">
+                        <div className="text-2xl font-bold tracking-tighter">
                           {ministryHours}
                         </div>
-                        <div className="text-[0.70rem] text-muted-foreground">
+                        <div className="text-[0.70rem] uppercase text-muted-foreground">
                           Hours
                         </div>
                       </div>
@@ -137,57 +241,49 @@ export default function App({ Component, pageProps }: AppProps) {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 shrink-0 rounded-full"
-                        onClick={() => setMinistryHours(Math.min(24, ministryHours + 1))}
-                        disabled={ministryHours >= 24}
+                        onClick={() => setMinistryHours(ministryHours + 1)}
                       >
-                        <Plus />
+                        <Plus className="h-4 w-4" />
                         <span className="sr-only">Increase</span>
                       </Button>
                     </div>
                     {/* Bible Studies */}
-                    <div className="flex items-center justify-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 rounded-full"
-                        onClick={() => setBibleStudies(Math.max(0, bibleStudies - 1))}
-                        disabled={bibleStudies <= 0}
-                      >
-                        <Minus />
-                        <span className="sr-only">Decrease</span>
-                      </Button>
-                      <div className="flex-1 text-center">
-                        <div className="text-xl font-bold tracking-tighter">
-                          {bibleStudies}
+                    <div className="mt-3">
+                      <div className="flex items-center justify-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 shrink-0 rounded-full"
+                          onClick={() => setBibleStudies(Math.max(0, bibleStudies - 1))}
+                          disabled={bibleStudies <= 0}
+                        >
+                          <Minus className="h-4 w-4" />
+                          <span className="sr-only">Decrease</span>
+                        </Button>
+                        <div className="flex-1 text-center">
+                          <div className="text-2xl font-bold tracking-tighter">
+                            {bibleStudies}
+                          </div>
+                          <div className="text-[0.70rem] uppercase text-muted-foreground">
+                            Bible Studies
+                          </div>
                         </div>
-                        <div className="text-[0.70rem] text-muted-foreground">
-                          Bible Studies
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 shrink-0 rounded-full"
+                          onClick={() => setBibleStudies(bibleStudies + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                          <span className="sr-only">Increase</span>
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 shrink-0 rounded-full"
-                        onClick={() => setBibleStudies(Math.min(99, bibleStudies + 1))}
-                        disabled={bibleStudies >= 99}
-                      >
-                        <Plus />
-                        <span className="sr-only">Increase</span>
-                      </Button>
                     </div>
                   </div>
-                  <DrawerFooter className="pb-10">
-                    <Button>Submit</Button>
+                  <DrawerFooter className="mb-6">
+                    <Button onClick={handleSubmit}>Submit</Button>
                     <DrawerClose asChild>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setMinistryHours(0);
-                          setBibleStudies(0);
-                        }}
-                      >
-                        Cancel
-                      </Button>
+                      <Button variant="outline">Cancel</Button>
                     </DrawerClose>
                   </DrawerFooter>
                 </div>
