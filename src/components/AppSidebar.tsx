@@ -1,4 +1,4 @@
-import { Calendar, Clipboard, ChartLine, AlarmClockCheck, Github } from "lucide-react"
+import { Calendar, Clipboard, ChartLine, AlarmClockCheck, Github, House } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -15,18 +15,23 @@ import Link from "next/link"
 // Menu items.
 const items = [
   {
-    title: "Daily",
+    title: "Home",
     href: "/",
+    icon: House,
+  },
+  {
+    title: "Daily",
+    href: "/daily",
     icon: Calendar,
   },
   {
     title: "Monthly",
-    href: "/",
+    href: "/monthly",
     icon: Clipboard,
   },
   {
     title: "Yearly",
-    href: "/",
+    href: "/yearly",
     icon: ChartLine,
   }
 ]
