@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils"
 import { Geist } from "next/font/google";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { Minus, Plus, Moon, CalendarIcon } from 'lucide-react';
+import { Minus, Plus, Moon, CalendarIcon, Sprout } from 'lucide-react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,9 +64,60 @@ export default function App({ Component, pageProps }: AppProps) {
   const [informalWitnessing, setInformalWitnessing] = React.useState<Checked>(false)
   const [others, setOthers] = React.useState<Checked>(false)
   const [open, setOpen] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null);
+
+  // Reset all form values when drawer closes or route changes
+  React.useEffect(() => {
+    if (!open) {
+      setDate(new Date());
+      setMinistryHours(0);
+      setBibleStudies(0);
+      setHouseToHouse(false);
+      setBibleStudy(false);
+      setReturnVisit(false);
+      setCartWitnessing(false);
+      setLetterWriting(false);
+      setInformalWitnessing(false);
+      setOthers(false);
+      setError(null);
+    }
+  }, [open]);
+
+  React.useEffect(() => {
+    // Reset date to current date when route changes
+    setDate(new Date());
+  }, [Component]);
+
+  const getSelectedMinistryCount = () => {
+    return [houseToHouse, bibleStudy, returnVisit, cartWitnessing, 
+            letterWriting, informalWitnessing, others].filter(Boolean).length;
+  };
+
+  const hasSelectedMinistryType = () => {
+    return getSelectedMinistryCount() > 0;
+  };
 
   const handleSubmit = () => {
-    if (!date || typeof window === 'undefined') return;
+    // Reset error state
+    setError(null);
+
+    // Validate required fields
+    if (!date) {
+      setError("Please select a date");
+      return;
+    }
+
+    if (ministryHours <= 0) {
+      setError("Please enter ministry hours");
+      return;
+    }
+
+    if (!hasSelectedMinistryType()) {
+      setError("Please select at least one ministry type");
+      return;
+    }
+
+    if (typeof window === 'undefined') return;
 
     const activities = [
       houseToHouse && 'House to House',
@@ -90,8 +141,8 @@ export default function App({ Component, pageProps }: AppProps) {
       const existingEntriesStr = localStorage.getItem('timeEntries');
       const existingEntries: TimeEntry[] = existingEntriesStr ? JSON.parse(existingEntriesStr) : [];
 
-      // Add new entry
-      const updatedEntries = [...existingEntries, entry];
+      // Add new entry at the beginning of the array
+      const updatedEntries = [entry, ...existingEntries];
       localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
 
       // Reset form
@@ -108,8 +159,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
       // Force reload entries in daily page
       window.dispatchEvent(new Event('storage'));
-    } catch (error) {
-      console.error('Error saving entry:', error);
+      setError(null);
+
+    } catch (err) {
+      setError("Failed to save entry. Please try again.");
+      console.error("Error saving entry:", err);
     }
   };
 
@@ -122,7 +176,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <header className="sticky top-0 z-50 bg-background border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex flex-row flex-1 justify-between px-4">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="-ml-1" />
@@ -166,9 +220,12 @@ export default function App({ Component, pageProps }: AppProps) {
                     {/* Multiselect for Ministry Avenue */}
                     <DropdownMenu >
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">Type of Ministry</Button>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                          <Sprout className="mr-2 h-4 w-4" /> 
+                          Type of Ministry{getSelectedMinistryCount() > 0 ? ` (${getSelectedMinistryCount()})` : ''}
+                        </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className={geistSans.className + " w-[280]"}>
+                      <DropdownMenuContent className={geistSans.className + " w-[280px]"}>
                         <DropdownMenuLabel>Select items that apply</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuCheckboxItem
@@ -281,6 +338,11 @@ export default function App({ Component, pageProps }: AppProps) {
                     </div>
                   </div>
                   <DrawerFooter className="mb-6">
+                    {error && (
+                      <div className="text-red-500 text-sm mb-2">
+                        {error}
+                      </div>
+                    )}
                     <Button onClick={handleSubmit}>Submit</Button>
                     <DrawerClose asChild>
                       <Button variant="outline">Cancel</Button>
