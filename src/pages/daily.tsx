@@ -29,6 +29,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { EditButton } from "@/components/edit-button"
 
 import { Trash2 } from 'lucide-react';
 import { Geist } from "next/font/google";
@@ -42,6 +43,13 @@ interface TimeEntry {
   date: string;
   ministryHours: number;
   bibleStudies: number;
+  houseToHouse: boolean;
+  bibleStudy: boolean;
+  returnVisit: boolean;
+  cartWitnessing: boolean;
+  letterWriting: boolean;
+  informalWitnessing: boolean;
+  others: boolean;
   activities: string[];
 }
 
@@ -58,13 +66,8 @@ export default function DailyPage() {
       const entriesStr = localStorage.getItem('timeEntries');
       if (entriesStr) {
         const allEntries: TimeEntry[] = JSON.parse(entriesStr);
-        // Filter out the entry to delete
-        const updatedEntries = allEntries.filter(entry =>
-          entry.date !== entryToDelete.date ||
-          entry.ministryHours !== entryToDelete.ministryHours ||
-          entry.bibleStudies !== entryToDelete.bibleStudies ||
-          !arraysEqual(entry.activities, entryToDelete.activities)
-        );
+        // Filter out the entry to delete based on exact date
+        const updatedEntries = allEntries.filter(entry => entry.date !== entryToDelete.date);
 
         // Save back to localStorage
         localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
@@ -79,12 +82,6 @@ export default function DailyPage() {
     } catch (error) {
       console.error('Error deleting entry:', error);
     }
-  };
-
-  // Helper function to compare arrays
-  const arraysEqual = (a: string[], b: string[]) => {
-    if (a.length !== b.length) return false;
-    return a.every((val, index) => val === b[index]);
   };
 
   const loadEntries = React.useCallback(() => {
@@ -183,24 +180,55 @@ export default function DailyPage() {
                     <CardDescription>{entry.bibleStudies} Bible {entry.bibleStudies === 1 ? 'Study' : 'Studies'}</CardDescription>
                   )}
                 </div>
-                <div className="flex items-start gap-2">
-                  <Dialog open={open} onOpenChange={setOpen}>
+                <div className="flex justify-start gap-2">
+                  <EditButton 
+                    entry={{
+                      date: new Date(entry.date),
+                      ministryHours: entry.ministryHours || 0,
+                      bibleStudies: entry.bibleStudies || 0,
+                      houseToHouse: entry.activities.includes('House to House'),
+                      bibleStudy: entry.activities.includes('Bible Study'),
+                      returnVisit: entry.activities.includes('Return Visit'),
+                      cartWitnessing: entry.activities.includes('Cart Witnessing'),
+                      letterWriting: entry.activities.includes('Letter Writing'),
+                      informalWitnessing: entry.activities.includes('Informal Witnessing'),
+                      others: entry.activities.includes('Others'),
+                      activities: entry.activities || []
+                    }}
+                    onSave={(updatedEntry) => {
+                      const entriesStr = localStorage.getItem('timeEntries');
+                      if (entriesStr) {
+                        const allEntries: TimeEntry[] = JSON.parse(entriesStr);
+                        const updatedEntries = allEntries.map(e => {
+                          if (e.date === entry.date) {
+                            return {
+                              ...updatedEntry,
+                              date: updatedEntry.date.toISOString()
+                            };
+                          }
+                          return e;
+                        });
+                        localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
+                        window.dispatchEvent(new Event('storage'));
+                      }
+                    }}
+                  />
+                  <Dialog open={open && entryToDelete?.date === entry.date} onOpenChange={setOpen}>
                     <DialogTrigger>
-                      <button className="p-2 border rounded hover:bg-accent" onClick={() => setEntryToDelete(entry)}>
+                      <Button variant="outline" className="h-8 w-8 px-0" onClick={() => setEntryToDelete(entry)}>
                         <Trash2 color="#dc2626" size={14} />
-                      </button>
+                      </Button>
                     </DialogTrigger>
                     <DialogContent className={geistSans.className + " w-[280px] rounded-md"}>
                       <DialogHeader className="text-left">
                         <DialogTitle>Are you sure?</DialogTitle>
                         <DialogDescription>
-                          This action cannot be undone. This will permanently delete your entry.
+                          This action cannot be undone.
                         </DialogDescription>
                       </DialogHeader>
                       <DialogFooter>
-                        <Button variant="destructive" className="w-20" onClick={() => handleDelete(entryToDelete as TimeEntry)}>
-                          Delete
-                        </Button>
+                        <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button variant="destructive" onClick={() => handleDelete(entry)}>Delete</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>

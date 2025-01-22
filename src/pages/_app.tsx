@@ -108,12 +108,12 @@ export default function App({ Component, pageProps }: AppProps) {
     }
 
     if (ministryHours <= 0) {
-      setError("Please enter ministry hours");
+      setError("Add hours spent in the ministry");
       return;
     }
 
     if (!hasSelectedMinistryType()) {
-      setError("Please select at least one ministry type");
+      setError("Select at least one type of ministry");
       return;
     }
 
@@ -196,6 +196,7 @@ export default function App({ Component, pageProps }: AppProps) {
                   <DrawerHeader className="flex flex-col items-center justify-center gap-4">
                     {/* Date Picker */}
                     <Popover>
+                      <DrawerTitle>Add Time</DrawerTitle>
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
