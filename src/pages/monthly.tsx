@@ -196,10 +196,10 @@ export default function MonthlyPage() {
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {/* Chart here */}
           <MonthlyChart selectedDate={date} />
           <div className="col-span-2 md:col-span-1">
             <BibleStudiesCard selectedDate={date} />
+            
           </div>
         </div>
         <Separator />

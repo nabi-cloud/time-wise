@@ -170,7 +170,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SidebarProvider className={`${geistSans.variable} min-h-screen font-[family-name:var(--font-geist-sans)]`}>
       <Head>
-        <title>Ministry Time Tracker</title>
+        <title>TimeWise</title>
         <meta name="description" content="Ministry time tracker webapp" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
