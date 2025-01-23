@@ -35,8 +35,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EditButton } from "@/components/edit-button"
-import { MonthlyChart } from "@/components/monthly-chart";
-import { BibleStudiesCard } from "@/components/bible-studies-card";
+import { MonthlyChart } from "@/components/hour-month-chart";
+import { BibleStudiesCard } from "@/components/bs-month-stats-card";
+import { ActivityChart } from "@/components/activity-chart"
 
 interface TimeEntry {
   date: string;
@@ -197,9 +198,9 @@ export default function MonthlyPage() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <MonthlyChart selectedDate={date} />
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-1 space-y-4">
             <BibleStudiesCard selectedDate={date} />
-            
+            <ActivityChart entries={entries} />
           </div>
         </div>
         <Separator />

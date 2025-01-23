@@ -7,7 +7,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
 } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -16,7 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-// Function to get total hours for a specific month
+// Function to get total bible studies for a specific month
 type MonthName = 
   | "September" | "October" | "November" | "December" | "January" | "February"
   | "March" | "April" | "May" | "June" | "July" | "August";
@@ -46,34 +45,34 @@ function getServiceYearMonthYear(month: MonthName, serviceYear: number): { month
   return { month: monthNumber, year };
 }
 
-function getMonthHours(entries: TimeEntry[], month: MonthName, serviceYear: number): number {
+function getMonthBibleStudies(entries: TimeEntry[], month: MonthName, serviceYear: number): number {
   try {
     if (!entries) return 0;
 
     const { month: targetMonth, year: targetYear } = getServiceYearMonthYear(month, serviceYear);
 
-    // Filter entries for the specific month and year, then sum up the hours
+    // Filter entries for the specific month and year, then sum up the bible studies
     return entries
       .filter(entry => {
         const entryDate = new Date(entry.date);
         return entryDate.getMonth() === targetMonth && 
                entryDate.getFullYear() === targetYear;
       })
-      .reduce((total, entry) => total + (entry.ministryHours || 0), 0);
+      .reduce((total, entry) => total + (entry.bibleStudies || 0), 0);
   } catch (error) {
-    console.error('Error calculating hours for month:', error);
+    console.error('Error calculating bible studies for month:', error);
     return 0;
   }
 }
 
 const chartConfig = {
-  hours: {
-    label: "Hours",
-    color: "hsl(var(--chart-2))",
+  studies: {
+    label: "Bible Studies",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function YearlyChart({ year }: YearlyChartProps) {
+export function YearlyBibleStudiesChart({ year }: YearlyChartProps) {
   const [timeEntries, setTimeEntries] = React.useState<TimeEntry[]>([]);
 
   React.useEffect(() => {
@@ -102,27 +101,27 @@ export function YearlyChart({ year }: YearlyChartProps) {
   }, []);
 
   const firstHalfData = [
-    { month: "September", hours: getMonthHours(timeEntries, "September", year) },
-    { month: "October", hours: getMonthHours(timeEntries, "October", year) },
-    { month: "November", hours: getMonthHours(timeEntries, "November", year) },
-    { month: "December", hours: getMonthHours(timeEntries, "December", year) },
-    { month: "January", hours: getMonthHours(timeEntries, "January", year) },
-    { month: "February", hours: getMonthHours(timeEntries, "February", year) }
+    { month: "September", studies: getMonthBibleStudies(timeEntries, "September", year) },
+    { month: "October", studies: getMonthBibleStudies(timeEntries, "October", year) },
+    { month: "November", studies: getMonthBibleStudies(timeEntries, "November", year) },
+    { month: "December", studies: getMonthBibleStudies(timeEntries, "December", year) },
+    { month: "January", studies: getMonthBibleStudies(timeEntries, "January", year) },
+    { month: "February", studies: getMonthBibleStudies(timeEntries, "February", year) }
   ];
 
   const secondHalfData = [
-    { month: "March", hours: getMonthHours(timeEntries, "March", year) },
-    { month: "April", hours: getMonthHours(timeEntries, "April", year) },
-    { month: "May", hours: getMonthHours(timeEntries, "May", year) },
-    { month: "June", hours: getMonthHours(timeEntries, "June", year) },
-    { month: "July", hours: getMonthHours(timeEntries, "July", year) },
-    { month: "August", hours: getMonthHours(timeEntries, "August", year) }
+    { month: "March", studies: getMonthBibleStudies(timeEntries, "March", year) },
+    { month: "April", studies: getMonthBibleStudies(timeEntries, "April", year) },
+    { month: "May", studies: getMonthBibleStudies(timeEntries, "May", year) },
+    { month: "June", studies: getMonthBibleStudies(timeEntries, "June", year) },
+    { month: "July", studies: getMonthBibleStudies(timeEntries, "July", year) },
+    { month: "August", studies: getMonthBibleStudies(timeEntries, "August", year) }
   ];
 
   const renderChart = (data: typeof firstHalfData, title: string) => (
     <Card className="flex-1">
       <CardHeader>
-        <CardTitle className="text-xl">Hour Overview</CardTitle>
+        <CardTitle className="text-xl">Bible Studies Overview</CardTitle>
         <CardDescription>{title}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -136,7 +135,7 @@ export function YearlyChart({ year }: YearlyChartProps) {
             }}
           >
             <CartesianGrid horizontal={false} />
-            <XAxis type="number" dataKey="hours" hide />
+            <XAxis type="number" dataKey="studies" hide />
             <YAxis
               dataKey="month"
               type="category"
@@ -147,12 +146,11 @@ export function YearlyChart({ year }: YearlyChartProps) {
               fontSize={12}
             />
             <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent />}
             />
-            <Bar dataKey="hours" fill="var(--color-hours)" radius={5}>
+            <Bar dataKey="studies" fill="var(--color-studies)" radius={5}>
               <LabelList
-                dataKey="hours"
+                dataKey="studies"
                 position="right"
                 offset={8}
                 className="fill-foreground"

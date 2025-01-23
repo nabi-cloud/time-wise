@@ -36,7 +36,9 @@ import { cn } from "@/lib/utils"
 import { Geist } from "next/font/google";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import { Minus, Plus, Moon, CalendarIcon, Sprout } from 'lucide-react';
+import { Minus, Plus, CalendarIcon, Sprout } from 'lucide-react';
+import { ThemeProvider } from "next-themes"
+import { ModeSwitcher } from "@/components/mode-switcher"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -168,196 +170,201 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <SidebarProvider className={`${geistSans.variable} min-h-screen font-[family-name:var(--font-geist-sans)]`}>
-      <Head>
-        <title>TimeWise</title>
-        <meta name="description" content="Ministry time tracker webapp" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="sticky top-0 z-50 bg-background border-b flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex flex-row flex-1 justify-between px-4">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="h-6" />
-              <button className="flex items-center justify-center hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-7 w-7 rounded">
-                <Moon size={18} />
-              </button>
-            </div>
-            <Drawer open={open} onOpenChange={setOpen}>
-              <DrawerTrigger asChild>
-                <Button className="h-7 w-24 text-xs font">
-                  <Plus color="#ffffff" /> Add Time
-                </Button>
-              </DrawerTrigger>
-              <DrawerContent className={geistSans.className}>
-                <div className="mx-auto w-full max-w-sm">
-                  <DrawerHeader className="flex flex-col items-center justify-center gap-4">
-                    {/* Date Picker */}
-                    <Popover>
-                      <DrawerTitle>Add Time</DrawerTitle>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={setDate}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    {/* Multiselect for Ministry Avenue */}
-                    <DropdownMenu >
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">
-                          <Sprout className="mr-2 h-4 w-4" /> 
-                          Type of Ministry{getSelectedMinistryCount() > 0 ? ` (${getSelectedMinistryCount()})` : ''}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className={geistSans.className + " w-[280px]"}>
-                        <DropdownMenuLabel>Select items that apply</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuCheckboxItem
-                          checked={houseToHouse}
-                          onCheckedChange={setHouseToHouse}
-                        >
-                          House to House
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={bibleStudy}
-                          onCheckedChange={setBibleStudy}
-                        >
-                          Bible Study
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={returnVisit}
-                          onCheckedChange={setReturnVisit}
-                        >
-                          Return Visit
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={cartWitnessing}
-                          onCheckedChange={setCartWitnessing}
-                        >
-                          Cart Witnessing
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={letterWriting}
-                          onCheckedChange={setLetterWriting}
-                        >
-                          Letter Writing
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={informalWitnessing}
-                          onCheckedChange={setInformalWitnessing}
-                        >
-                          Informal Witnessing
-                        </DropdownMenuCheckboxItem>
-                        <DropdownMenuCheckboxItem
-                          checked={others}
-                          onCheckedChange={setOthers}
-                        >
-                          Others
-                        </DropdownMenuCheckboxItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </DrawerHeader>
-                  <div className="p-4">
-                    {/* Hours in the Ministry */}
-                    <div className="flex items-center justify-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 shrink-0 rounded-full"
-                        onClick={() => setMinistryHours(Math.max(0, ministryHours - 1))}
-                        disabled={ministryHours <= 0}
-                      >
-                        <Minus className="h-4 w-4" />
-                        <span className="sr-only">Decrease</span>
-                      </Button>
-                      <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold tracking-tighter">
-                          {ministryHours}
-                        </div>
-                        <div className="text-[0.70rem] uppercase text-muted-foreground">
-                          Hours
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 shrink-0 rounded-full"
-                        onClick={() => setMinistryHours(ministryHours + 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                        <span className="sr-only">Increase</span>
-                      </Button>
-                    </div>
-                    {/* Bible Studies */}
-                    <div className="mt-3">
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <SidebarProvider className={`${geistSans.variable} min-h-screen font-[family-name:var(--font-geist-sans)]`}>
+        <Head>
+          <title>TimeWise</title>
+          <meta name="description" content="Ministry time tracker webapp" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="sticky top-0 z-50 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 flex h-14 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex flex-row flex-1 justify-between px-4">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="h-6" />
+                <ModeSwitcher />
+              </div>
+              <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerTrigger asChild>
+                  <Button className="h-7 w-24 text-xs bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus className="mr-1 h-4 w-4" /> Add Time
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className={geistSans.className}>
+                  <div className="mx-auto w-full max-w-sm">
+                    <DrawerHeader className="flex flex-col items-center justify-center gap-4">
+                      {/* Date Picker */}
+                      <Popover>
+                        <DrawerTitle>Add Time</DrawerTitle>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      {/* Multiselect for Ministry Avenue */}
+                      <DropdownMenu >
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="w-full justify-start text-left font-normal">
+                            <Sprout className="mr-2 h-4 w-4" /> 
+                            Type of Ministry{getSelectedMinistryCount() > 0 ? ` (${getSelectedMinistryCount()})` : ''}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className={geistSans.className + " w-[280px]"}>
+                          <DropdownMenuLabel>Select items that apply</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuCheckboxItem
+                            checked={houseToHouse}
+                            onCheckedChange={setHouseToHouse}
+                          >
+                            House to House
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={bibleStudy}
+                            onCheckedChange={setBibleStudy}
+                          >
+                            Bible Study
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={returnVisit}
+                            onCheckedChange={setReturnVisit}
+                          >
+                            Return Visit
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={cartWitnessing}
+                            onCheckedChange={setCartWitnessing}
+                          >
+                            Cart Witnessing
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={letterWriting}
+                            onCheckedChange={setLetterWriting}
+                          >
+                            Letter Writing
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={informalWitnessing}
+                            onCheckedChange={setInformalWitnessing}
+                          >
+                            Informal Witnessing
+                          </DropdownMenuCheckboxItem>
+                          <DropdownMenuCheckboxItem
+                            checked={others}
+                            onCheckedChange={setOthers}
+                          >
+                            Others
+                          </DropdownMenuCheckboxItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </DrawerHeader>
+                    <div className="p-4">
+                      {/* Hours in the Ministry */}
                       <div className="flex items-center justify-center space-x-2">
                         <Button
                           variant="outline"
                           size="icon"
                           className="h-8 w-8 shrink-0 rounded-full"
-                          onClick={() => setBibleStudies(Math.max(0, bibleStudies - 1))}
-                          disabled={bibleStudies <= 0}
+                          onClick={() => setMinistryHours(Math.max(0, ministryHours - 1))}
+                          disabled={ministryHours <= 0}
                         >
                           <Minus className="h-4 w-4" />
                           <span className="sr-only">Decrease</span>
                         </Button>
                         <div className="flex-1 text-center">
                           <div className="text-2xl font-bold tracking-tighter">
-                            {bibleStudies}
+                            {ministryHours}
                           </div>
                           <div className="text-[0.70rem] uppercase text-muted-foreground">
-                            Bible Studies
+                            Hours
                           </div>
                         </div>
                         <Button
                           variant="outline"
                           size="icon"
                           className="h-8 w-8 shrink-0 rounded-full"
-                          onClick={() => setBibleStudies(bibleStudies + 1)}
+                          onClick={() => setMinistryHours(ministryHours + 1)}
                         >
                           <Plus className="h-4 w-4" />
                           <span className="sr-only">Increase</span>
                         </Button>
                       </div>
-                    </div>
-                  </div>
-                  <DrawerFooter className="mb-6">
-                    {error && (
-                      <div className="text-red-500 text-sm mb-2">
-                        {error}
+                      {/* Bible Studies */}
+                      <div className="mt-3">
+                        <div className="flex items-center justify-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => setBibleStudies(Math.max(0, bibleStudies - 1))}
+                            disabled={bibleStudies <= 0}
+                          >
+                            <Minus className="h-4 w-4" />
+                            <span className="sr-only">Decrease</span>
+                          </Button>
+                          <div className="flex-1 text-center">
+                            <div className="text-2xl font-bold tracking-tighter">
+                              {bibleStudies}
+                            </div>
+                            <div className="text-[0.70rem] uppercase text-muted-foreground">
+                              Bible Studies
+                            </div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 rounded-full"
+                            onClick={() => setBibleStudies(bibleStudies + 1)}
+                          >
+                            <Plus className="h-4 w-4" />
+                            <span className="sr-only">Increase</span>
+                          </Button>
+                        </div>
                       </div>
-                    )}
-                    <Button onClick={handleSubmit}>Submit</Button>
-                    <DrawerClose asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
-                  </DrawerFooter>
-                </div>
-              </DrawerContent>
-            </Drawer>
+                    </div>
+                    <DrawerFooter className="mb-6">
+                      {error && (
+                        <div className="text-red-500 text-sm mb-2">
+                          {error}
+                        </div>
+                      )}
+                      <Button onClick={handleSubmit}>Submit</Button>
+                      <DrawerClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </header>
+          <div className="flex flex-1 flex-col gap-4 p-4">
+            <Component {...pageProps} />
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <Component {...pageProps} />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

@@ -79,42 +79,43 @@ export function MonthlyChart({ selectedDate }: MonthlyChartProps) {
         { 
             name: "Progress",
             hours: totalHours,
-            fill: "hsl(var(--chart-2))"
+            fill: "hsl(var(--chart-2))",
+            progress: 90 + Math.max(1, Math.min(360, (totalHours / goalHours) * 360))
         }
     ];
     
     return (
-        <Card className="flex flex-col col-span-2 md:col-span-1">
+        <Card className="flex flex-col justify-between col-span-2 md:col-span-1">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Total Hours</CardTitle>
                 <CardDescription>{format(selectedDate, "MMMM yyyy")}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
+            <CardContent className="flex-1 pt-4 max-h-[290px]">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px]"
+                    className="mx-auto aspect-square max-h-[260px]"
                 >
                     <RadialBarChart
                         data={chartData}
-                        endAngle={Math.min(360, (totalHours / goalHours) * 360)}
-                        innerRadius={80}
-                        outerRadius={140}
+                        endAngle={chartData[0].progress}
+                        innerRadius={100}
+                        outerRadius={180}
                         cx="50%"
                         cy="50%"
-                        startAngle={0}
-                        barSize={30}
+                        startAngle={90}
+                        barSize={25}
                     >
                         <PolarGrid
                             gridType="circle"
                             radialLines={false}
                             stroke="none"
                             className="first:fill-muted last:fill-background"
-                            polarRadius={[86, 74]}
+                            polarRadius={[112, 86]}
                         />
                         <RadialBar 
                             dataKey="hours" 
                             background
-                            cornerRadius={10}
+                            cornerRadius={2}
                         />
                         <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                             <Label

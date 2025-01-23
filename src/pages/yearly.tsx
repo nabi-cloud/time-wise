@@ -3,7 +3,9 @@ import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Geist } from "next/font/google"
 import { Calendar } from "@/components/ui/calendar"
-import { YearlyChart } from "@/components/yearly-chart"
+import { YearlyHoursChart } from "@/components/yearly-hours-chart"
+import { YearlyBibleStudiesChart } from "@/components/yearly-bible-studies-chart"
+import { YearlyActivityChart } from "@/components/yearly-activity-chart"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,7 +54,7 @@ export default function YearlyPage() {
     monthlyAverageBibleStudies: 0,
   })
 
-  const calculateYearlyStats = (year: number) => {
+  const calculateYearlyStats = (serviceYear: number) => {
     if (typeof window === 'undefined') return;
 
     try {
@@ -60,31 +62,32 @@ export default function YearlyPage() {
       if (!entriesStr) return;
 
       const allEntries: TimeEntry[] = JSON.parse(entriesStr);
-      
+
       // Filter entries for the service year (September previous year to August current year)
-      const yearEntries = allEntries.filter(entry => {
+      const serviceYearEntries = allEntries.filter(entry => {
         const entryDate = new Date(entry.date);
         const entryMonth = entryDate.getMonth(); // 0-11 where 0 is January
         const entryYear = entryDate.getFullYear();
 
-        // For months September(8) to December(11), check previous year
         if (entryMonth >= 8) {
-          return entryYear === year - 1;
+          // September-December should be from previous year
+          return entryYear === serviceYear - 1;
+        } else {
+          // January-August should be from service year
+          return entryYear === serviceYear;
         }
-        // For months January(0) to August(7), check current year
-        return entryYear === year;
       });
 
       // Calculate stats
-      const totalHours = yearEntries.reduce((sum, entry) => sum + entry.ministryHours, 0);
-      const totalStudies = yearEntries.reduce((sum, entry) => sum + entry.bibleStudies, 0);
-      
+      const totalHours = serviceYearEntries.reduce((sum, entry) => sum + (entry.ministryHours || 0), 0);
+      const totalStudies = serviceYearEntries.reduce((sum, entry) => sum + (entry.bibleStudies || 0), 0);
+
       // Calculate monthly average using all 12 months of the service year
       const averageHours = totalHours / 12;
       const averageStudies = totalStudies / 12;
 
       setStats({
-        year,
+        year: serviceYear,
         totalMinistryHours: totalHours,
         totalBibleStudies: totalStudies,
         monthlyAverageHours: averageHours,
@@ -97,13 +100,19 @@ export default function YearlyPage() {
 
   // Calculate stats when component mounts and when date changes
   React.useEffect(() => {
-    calculateYearlyStats(date.getFullYear());
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const serviceYear = month >= 8 ? year + 1 : year;
+    calculateYearlyStats(serviceYear);
   }, [date]);
 
   // Listen for storage changes from other components
   React.useEffect(() => {
     const handleStorageChange = () => {
-      calculateYearlyStats(date.getFullYear());
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      const serviceYear = month >= 8 ? year + 1 : year;
+      calculateYearlyStats(serviceYear);
     };
 
     window.addEventListener('storage', handleStorageChange);
@@ -115,8 +124,18 @@ export default function YearlyPage() {
   const handleSelect = (newDate: Date | undefined) => {
     if (newDate) {
       setDate(newDate);
-      calculateYearlyStats(newDate.getFullYear());
+      const month = newDate.getMonth();
+      const year = newDate.getFullYear();
+      const serviceYear = month >= 8 ? year + 1 : year;
+      calculateYearlyStats(serviceYear);
     }
+  };
+
+  // Get the display year for the button (service year)
+  const getDisplayYear = (date: Date) => {
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    return month >= 8 ? year + 1 : year;
   };
 
   return (
@@ -125,33 +144,36 @@ export default function YearlyPage() {
       geistSans.className,
       "font-sans"
     )}>
-      <div className="flex items-center justify-between p-0">
-        <div>
-          <h1 className="text-2xl font-bold">Yearly Report</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "justify-start text-left font-normal",
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {format(date, "yyyy")}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={handleSelect}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+      <h1 className="text-2xl font-bold">Yearly Report</h1>
+      <div className="flex justify-start gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "max-w-[300px] w-full justify-start text-left font-normal",
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {getDisplayYear(date)} Service Year
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={handleSelect}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        <Button
+          variant="outline"
+          className={cn("h-10")}
+          onClick={() => handleSelect(new Date())}
+        >
+          Today
+        </Button>
       </div>
       <Separator />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -162,7 +184,7 @@ export default function YearlyPage() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalMinistryHours}</div>
             <p className="text-xs text-muted-foreground">
-              Hours in ministry this year
+              {600 - stats.totalMinistryHours} hours left to reach 600 hours
             </p>
           </CardContent>
         </Card>
@@ -200,7 +222,11 @@ export default function YearlyPage() {
           </CardContent>
         </Card>
       </div>
-      <YearlyChart year={stats.year} />
+      <div className="grid gap-4 grid-cols-1">
+        <YearlyHoursChart year={stats.year} />
+        <YearlyBibleStudiesChart year={stats.year} />
+        <YearlyActivityChart year={stats.year} />
+      </div>
     </div>
   )
 }
