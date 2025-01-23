@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/chart"
 
 const chartData = [
-  { type: "BS", id: "bibleStudy", count: 0, fill: "hsl(var(--chart-1))" },
-  { type: "RV", id: "returnVisit", count: 0, fill: "hsl(var(--chart-2))" },
-  { type: "HH", id: "houseToHouse", count: 0, fill: "hsl(var(--chart-3))" },
+  { type: "HH", id: "houseToHouse", count: 0, fill: "hsl(var(--chart-1))" },
+  { type: "BS", id: "bibleStudy", count: 0, fill: "hsl(var(--chart-2))" },
+  { type: "RV", id: "returnVisit", count: 0, fill: "hsl(var(--chart-3))" },
   { type: "CW", id: "cartWitnessing", count: 0, fill: "hsl(var(--chart-4))" },
   { type: "LW", id: "letterWriting", count: 0, fill: "hsl(var(--chart-5))" },
   { type: "IW", id: "informalWitnessing", count: 0, fill: "hsl(var(--chart-1))" },

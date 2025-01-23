@@ -53,6 +53,13 @@ interface TimeEntry {
   date: string;
   ministryHours: number;
   bibleStudies: number;
+  houseToHouse: boolean;
+  bibleStudy: boolean;
+  returnVisit: boolean;
+  cartWitnessing: boolean;
+  letterWriting: boolean;
+  informalWitnessing: boolean;
+  others: boolean;
   activities: string[];
 }
 
@@ -137,6 +144,13 @@ export default function App({ Component, pageProps }: AppProps) {
       date: date.toISOString(),
       ministryHours,
       bibleStudies,
+      houseToHouse: !!houseToHouse,
+      bibleStudy: !!bibleStudy,
+      returnVisit: !!returnVisit,
+      cartWitnessing: !!cartWitnessing,
+      letterWriting: !!letterWriting,
+      informalWitnessing: !!informalWitnessing,
+      others: !!others,
       activities
     };
 
