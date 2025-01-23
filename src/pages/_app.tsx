@@ -31,6 +31,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import { Geist } from "next/font/google";
@@ -167,6 +169,8 @@ export default function App({ Component, pageProps }: AppProps) {
       setError("Failed to save entry. Please try again.");
       console.error("Error saving entry:", err);
     }
+
+    toast.success("Time entry saved");
   };
 
   return (
@@ -362,6 +366,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4">
             <Component {...pageProps} />
+            <Toaster richColors closeButton  />
           </div>
         </SidebarInset>
       </SidebarProvider>

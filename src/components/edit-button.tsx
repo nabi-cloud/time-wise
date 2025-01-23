@@ -4,6 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
@@ -113,6 +116,8 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
 
     onSave(updatedEntry);
     setOpen(false);
+
+    toast.success("Time entry updated");
   };
 
   return (
@@ -120,7 +125,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
       <Button variant="outline" className="h-8 w-8 px-0" onClick={() => setOpen(true)}>
         <Pencil className="h-4 w-4" />
       </Button>
-      <DialogContent className={cn(geistSans.className, "max-w-[400px]")}>
+      <DialogContent className={cn(geistSans.className, "w-[300px] lg:w-[400px] rounded-lg")}>
         <DialogHeader>
           <DialogTitle>Edit Time</DialogTitle>
         </DialogHeader>
@@ -247,7 +252,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
               {error}
             </div>
           )}
-          <div className="flex justify-between gap-2">
+          <div className="flex fex-row justify-end gap-2">
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={handleSubmit}>Save</Button>
           </div>
