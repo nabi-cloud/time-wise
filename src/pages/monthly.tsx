@@ -187,7 +187,7 @@ export default function MonthlyPage() {
           <MonthlyChart selectedDate={date} />
           <div className="col-span-2 md:col-span-1 space-y-4">
             <BibleStudiesCard selectedDate={date} />
-            <ActivityChart entries={entries} />
+            <ActivityChart entries={entries.filter(entry => isSameMonth(new Date(entry.date), date))} />
           </div>
         </div>
         <Separator />
