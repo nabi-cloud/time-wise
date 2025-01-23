@@ -38,20 +38,7 @@ import { EditButton } from "@/components/edit-button"
 import { MonthlyChart } from "@/components/hour-month-chart";
 import { BibleStudiesCard } from "@/components/bs-month-stats-card";
 import { ActivityChart } from "@/components/activity-chart"
-
-interface TimeEntry {
-  date: string;
-  ministryHours: number;
-  bibleStudies: number;
-  houseToHouse: boolean;
-  bibleStudy: boolean;
-  returnVisit: boolean;
-  cartWitnessing: boolean;
-  letterWriting: boolean;
-  informalWitnessing: boolean;
-  others: boolean;
-  activities: string[];
-}
+import { TimeEntry } from "@/types/time-entry"
 
 export default function MonthlyPage() {
   const [date, setDate] = React.useState<Date>(new Date())

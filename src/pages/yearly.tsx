@@ -28,13 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
-interface TimeEntry {
-  date: string;
-  ministryHours: number;
-  bibleStudies: number;
-  activities: string[];
-}
+import { TimeEntry } from "@/types/time-entry"
 
 interface YearlyStats {
   year: number;

@@ -41,6 +41,7 @@ import Head from "next/head";
 import { Minus, Plus, CalendarIcon, Sprout } from 'lucide-react';
 import { ThemeProvider } from "next-themes"
 import { ModeSwitcher } from "@/components/mode-switcher"
+import { TimeEntry, createActivitiesArray } from "@/types/time-entry"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,20 +49,6 @@ const geistSans = Geist({
 });
 
 type Checked = DropdownMenuCheckboxItemProps["checked"]
-
-interface TimeEntry {
-  date: string;
-  ministryHours: number;
-  bibleStudies: number;
-  houseToHouse: boolean;
-  bibleStudy: boolean;
-  returnVisit: boolean;
-  cartWitnessing: boolean;
-  letterWriting: boolean;
-  informalWitnessing: boolean;
-  others: boolean;
-  activities: string[];
-}
 
 export default function App({ Component, pageProps }: AppProps) {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
@@ -130,15 +117,19 @@ export default function App({ Component, pageProps }: AppProps) {
 
     if (typeof window === 'undefined') return;
 
-    const activities = [
-      houseToHouse && 'House to House',
-      bibleStudy && 'Bible Study',
-      returnVisit && 'Return Visit',
-      cartWitnessing && 'Cart Witnessing',
-      letterWriting && 'Letter Writing',
-      informalWitnessing && 'Informal Witnessing',
-      others && 'Others'
-    ].filter(Boolean) as string[];
+    const activities = createActivitiesArray({
+      date: date.toISOString(),
+      ministryHours,
+      bibleStudies,
+      houseToHouse: !!houseToHouse,
+      bibleStudy: !!bibleStudy,
+      returnVisit: !!returnVisit,
+      cartWitnessing: !!cartWitnessing,
+      letterWriting: !!letterWriting,
+      informalWitnessing: !!informalWitnessing,
+      others: !!others,
+      activities: []
+    });
 
     const entry: TimeEntry = {
       date: date.toISOString(),

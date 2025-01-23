@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EditButton } from "@/components/edit-button"
+import { TimeEntry, createBooleanFlags } from "@/types/time-entry"
 
 import { Trash2 } from 'lucide-react';
 import { Geist } from "next/font/google";
@@ -38,20 +39,6 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
-interface TimeEntry {
-  date: string;
-  ministryHours: number;
-  bibleStudies: number;
-  houseToHouse: boolean;
-  bibleStudy: boolean;
-  returnVisit: boolean;
-  cartWitnessing: boolean;
-  letterWriting: boolean;
-  informalWitnessing: boolean;
-  others: boolean;
-  activities: string[];
-}
 
 export default function DailyPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
@@ -186,13 +173,7 @@ export default function DailyPage() {
                       date: new Date(entry.date),
                       ministryHours: entry.ministryHours || 0,
                       bibleStudies: entry.bibleStudies || 0,
-                      houseToHouse: entry.activities.includes('House to House'),
-                      bibleStudy: entry.activities.includes('Bible Study'),
-                      returnVisit: entry.activities.includes('Return Visit'),
-                      cartWitnessing: entry.activities.includes('Cart Witnessing'),
-                      letterWriting: entry.activities.includes('Letter Writing'),
-                      informalWitnessing: entry.activities.includes('Informal Witnessing'),
-                      others: entry.activities.includes('Others'),
+                      ...createBooleanFlags(entry.activities),
                       activities: entry.activities || []
                     }}
                     onSave={(updatedEntry) => {
