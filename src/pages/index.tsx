@@ -18,7 +18,7 @@ export default function Home() {
         <Separator />
         <h2 className="text-2xl font-bold">Important Reminders</h2>
         <h3 className="text-xl font-bold">How your data is stored</h3>
-        <p>To update...</p>
+        <p>For simplicity and due to time constraints, this webapp is not connected to a database, which means your data is not shared or accessible from anywhere else (not even the developer of this webapp). Where is it stored? It is stored in your browser's local storage.</p>
       </div>
     </div>
   );
