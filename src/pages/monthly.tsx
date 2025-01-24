@@ -215,16 +215,16 @@ export default function MonthlyPage() {
                       <div className="flex justify-start gap-2">
                         <EditButton
                           entry={{
-                            date: new Date(entry.date),
+                            date: format(new Date(entry.date), 'yyyy-MM-dd'),
                             ministryHours: entry.ministryHours || 0,
                             bibleStudies: entry.bibleStudies || 0,
-                            houseToHouse: entry.activities.includes('House to House'),
-                            bibleStudy: entry.activities.includes('Bible Study'),
-                            returnVisit: entry.activities.includes('Return Visit'),
-                            cartWitnessing: entry.activities.includes('Cart Witnessing'),
-                            letterWriting: entry.activities.includes('Letter Writing'),
-                            informalWitnessing: entry.activities.includes('Informal Witnessing'),
-                            others: entry.activities.includes('Others'),
+                            houseToHouse: entry.activities?.includes('House to House') || false,
+                            bibleStudy: entry.activities?.includes('Bible Study') || false,
+                            returnVisit: entry.activities?.includes('Return Visit') || false,
+                            cartWitnessing: entry.activities?.includes('Cart Witnessing') || false,
+                            letterWriting: entry.activities?.includes('Letter Writing') || false,
+                            informalWitnessing: entry.activities?.includes('Informal Witnessing') || false,
+                            others: entry.activities?.includes('Others') || false,
                             activities: entry.activities || []
                           }}
                           onSave={(updatedEntry) => {
@@ -262,8 +262,8 @@ export default function MonthlyPage() {
                     </CardHeader>
                     <CardContent className="p-0 pt-4">
                       <div className="flex flex-wrap gap-2">
-                        {entry.activities.map((activity, idx) => (
-                          <Badge key={idx} variant="secondary">{activity}</Badge>
+                        {(entry.activities || []).map((activity, idx) => (
+                          <Badge key={idx} variant="outline">{activity}</Badge>
                         ))}
                       </div>
                     </CardContent>

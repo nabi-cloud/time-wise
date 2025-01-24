@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
 import { Geist } from "next/font/google";
 
@@ -19,7 +19,7 @@ const geistSans = Geist({
 
 interface EditButtonProps {
   entry: {
-    date: Date;
+    date: string;
     ministryHours: number;
     bibleStudies: number;
     houseToHouse: boolean;
@@ -36,7 +36,7 @@ interface EditButtonProps {
 
 export function EditButton({ entry, onSave }: EditButtonProps) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date>(entry.date);
+  const [date, setDate] = useState<Date>(parseISO(entry.date));
   const [ministryHours, setMinistryHours] = useState(entry.ministryHours || 0);
   const [bibleStudies, setBibleStudies] = useState(entry.bibleStudies || 0);
   const [houseToHouse, setHouseToHouse] = useState(entry.houseToHouse === true);
@@ -50,7 +50,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
 
   // Reset state when entry changes
   useEffect(() => {
-    setDate(entry.date);
+    setDate(parseISO(entry.date));
     setMinistryHours(entry.ministryHours || 0);
     setBibleStudies(entry.bibleStudies || 0);
     setHouseToHouse(entry.houseToHouse === true);
@@ -101,7 +101,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
     if (others) activities.push("Others");
 
     const updatedEntry = {
-      date,
+      date: format(date, "yyyy-MM-dd"),
       ministryHours,
       bibleStudies,
       houseToHouse,

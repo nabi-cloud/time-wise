@@ -170,10 +170,16 @@ export default function DailyPage() {
                 <div className="flex justify-start gap-2">
                   <EditButton 
                     entry={{
-                      date: new Date(entry.date),
+                      date: entry.date,
                       ministryHours: entry.ministryHours || 0,
                       bibleStudies: entry.bibleStudies || 0,
-                      ...createBooleanFlags(entry.activities),
+                      houseToHouse: entry.activities?.includes('House to House') || false,
+                      bibleStudy: entry.activities?.includes('Bible Study') || false,
+                      returnVisit: entry.activities?.includes('Return Visit') || false,
+                      cartWitnessing: entry.activities?.includes('Cart Witnessing') || false,
+                      letterWriting: entry.activities?.includes('Letter Writing') || false,
+                      informalWitnessing: entry.activities?.includes('Informal Witnessing') || false,
+                      others: entry.activities?.includes('Others') || false,
                       activities: entry.activities || []
                     }}
                     onSave={(updatedEntry) => {
