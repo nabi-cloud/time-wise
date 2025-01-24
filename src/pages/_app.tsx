@@ -42,6 +42,7 @@ import { Minus, Plus, CalendarIcon, Sprout } from 'lucide-react';
 import { ThemeProvider } from "next-themes"
 import { ModeSwitcher } from "@/components/mode-switcher"
 import { TimeEntry, createActivitiesArray } from "@/types/time-entry"
+import { safeSetItem, getStorageUsagePercentage } from '../utils/storageUtils';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -152,7 +153,25 @@ export default function App({ Component, pageProps }: AppProps) {
 
       // Add new entry at the beginning of the array
       const updatedEntries = [entry, ...existingEntries];
-      localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
+
+      // Calculate and log the size of the new entry
+      const entrySizeInBytes = new TextEncoder().encode(JSON.stringify(entry)).length;
+      console.log(`New entry added - Size: ${entrySizeInBytes} bytes`, entry);
+
+      // Log total storage size after addition
+      const totalStorageSizeInBytes = new TextEncoder().encode(JSON.stringify(updatedEntries)).length;
+      console.log(`Total storage size: ${totalStorageSizeInBytes} bytes`);
+      
+      // Use the safe storage method
+      if (!safeSetItem('timeEntries', JSON.stringify(updatedEntries))) {
+        return; // Exit if storage failed
+      }
+
+      // Show storage usage warning if getting close to limit
+      const usagePercentage = getStorageUsagePercentage();
+      if (usagePercentage > 80) {
+        toast.warning(`Storage is ${usagePercentage.toFixed(1)}% full. Consider backing up your data.`);
+      }
 
       // Reset form
       setMinistryHours(0);
@@ -188,7 +207,16 @@ export default function App({ Component, pageProps }: AppProps) {
       <SidebarProvider className={`${geistSans.variable} min-h-screen font-[family-name:var(--font-geist-sans)]`}>
         <Head>
           <title>TimeWise</title>
-          <meta name="description" content="Ministry time tracker webapp" />
+          <meta name="description" content="Manage your time efficiently with TimeWise" />
+          <meta property="og:title" content="TimeWise" />
+          <meta property="og:description" content="Manage your time efficiently with TimeWise" />
+          <meta property="og:image" content="/og-image.png" />
+          <meta property="og:image:width" content="1280" />
+          <meta property="og:image:height" content="640" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="TimeWise" />
+          <meta name="twitter:description" content="Manage your time efficiently with TimeWise" />
+          <meta name="twitter:image" content="/og-image.png" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <AppSidebar />
