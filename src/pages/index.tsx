@@ -5,7 +5,7 @@ export default function Home() {
     <div className="text-left grid grid-cols-4 gap-4">
       <div className="space-y-6 col-span-4 md:col-span-3">
         <h1 className="text-3xl font-bold">Welcome to TimeWise</h1>
-        <blockquote className="text-sm italic text-gray-300">
+        <blockquote className="text-sm italic text-gray-900 dark:text-gray-300">
           <p>&ldquo;So keep strict watch that how you walk is not as unwise but as wise persons, making the best use of your time.&rdquo; —Eph. 5:15, 16</p>
         </blockquote>
         <p>As an aid to help you reach your goal as a regular pioneer, TimeWise was created to keep track of your time spent in the ministry. Please take the time to read this guide to utilize all the features this webapp can offer.</p>
