@@ -1,15 +1,16 @@
+import React from "react";
 import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
-    <div className="text-left grid grid-cols-4 gap-4">
-      <div className="space-y-6 col-span-4 md:col-span-3">
+    <div className="text-left grid grid-cols-4 gap-12">
+      <div className="space-y-6 col-span-4 lg:col-span-3 order-last lg:order-first">
         <h1 className="text-3xl font-bold">Welcome to TimeWise</h1>
-        <blockquote className="text-sm italic text-gray-900 dark:text-gray-300">
+        <blockquote className="text-sm italic text-neutral-500">
           <p>&ldquo;So keep strict watch that how you walk is not as unwise but as wise persons, making the best use of your time.&rdquo; —Eph. 5:15, 16</p>
         </blockquote>
-        <p>As an aid to help you reach your goal as a regular pioneer, TimeWise was created to keep track of your time spent in the ministry. Please take the time to read this guide to utilize all the features this webapp can offer.</p>
-        <Separator />
+        <p id="important-reminders">As an aid to help you reach your goal as a regular pioneer, TimeWise was created to keep track of your time spent in the ministry. Please take the time to read this guide to utilize all the features this webapp can offer.</p>
+        <Separator  />
         <h2 className="text-2xl font-bold">Important Reminders</h2>
         <h3 className="text-xl font-bold">How your data is stored</h3>
         <p>For simplicity and due to time constraints, this webapp is not connected to a database, which means your data is not shared or accessible from anywhere else (not even the developer of this webapp). Where is it stored? It&apos;s stored in your browser&apos;s local storage.</p>
@@ -18,7 +19,7 @@ export default function Home() {
         <h3 className="text-xl font-bold">How large is the storage capacity</h3>
         <p>This webapp can store up to 5MB of storage. 5MB may seem small, but it actually exceeds the practical use limits. If we assume 1 entry consumes 400 bytes, and you add 4 entries per week, it will take you around 60 years before you could actually maixmize the 5MB. To make the best use of your storage, follow the guide for adding time entries.</p>
         <h3 className="text-xl font-bold">How to avoid data loss</h3>
-        <p>To avoid data loss, do not clear your browser's data. Clearing your browser's data will delete your existing records in this webapp.</p>
+        <p  id="getting-started">To avoid data loss, do not clear your browser's data. Clearing your browser's data will delete your existing records in this webapp.</p>
         <Separator />
         <h2 className="text-2xl font-bold">Getting Started</h2>
         <h3 className="text-xl font-bold">Adding time entries</h3>
@@ -51,7 +52,7 @@ export default function Home() {
             <strong>Important:</strong> Deleting an entry is permanent and cannot be undone. Make sure you no longer need the entry before proceeding.
           </p>
         </div>
-        <p>
+        <p id="understanding-the-charts">
           To confirm the deletion, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Delete</code>. If you change your mind, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Cancel</code> to keep the entry.
         </p>
         <Separator />
@@ -65,11 +66,11 @@ export default function Home() {
           This chart compares the total hours you recorded over the year, split into two 6-month periods. It helps you see if you’re consistent or improving over time. Use this to set goals and stay on track.
         </p>
         <h3 className="text-xl font-bold">Yearly Bible Study Conducted overview</h3>
-        <p>
+        <p id="getting-your-reports">
           This chart is like the yearly hour overview but focuses on the Bible studies you conducted. It also splits the data into two 6-month periods. Use this chart to see how your Bible studies are going and where you can improve.
         </p>
         <Separator />
-        <h2 className="text-2xl font-bold">Getting Your Reports</h2>
+        <h2 className="text-2xl font-bold" >Getting Your Reports</h2>
         <p>
           TimeWise makes it easy to share your monthly report with your group overseer. Just follow these simple steps:
         </p>
@@ -90,7 +91,7 @@ export default function Home() {
             Send the message to share your report.
           </li>
         </ol>
-        <p>
+        <p id="downloading-the-app">
           That’s it! Your monthly report is ready to be shared quickly and easily.
         </p>
         <Separator />
@@ -124,7 +125,7 @@ export default function Home() {
           <li>
             Select <strong>Add to Home Screen</strong>.
           </li>
-          <li>
+          <li id="share-timewise-with-others">
             Rename the app if you’d like, then tap <strong>Add</strong>. TimeWise will now appear on your home screen like an app.
           </li>
         </ol>
@@ -137,14 +138,15 @@ export default function Home() {
           Copy the website link from your browser’s address bar and send it through your favorite messaging app, email, or social media platform. Your recommendation could make a big difference for someone looking for an easy way to track their time and service!
         </p>
       </div>
-      <div className="text-left col-span-4 md:col-span-1">
-        <div className="flex flex-col gap-4">
-          <a href="#important-reminders" className="text-blue-500 hover:underline">Important Reminders</a>
-          <a href="#getting-started" className="text-blue-500 hover:underline">Getting Started</a>
-          <a href="#understanding-the-charts" className="text-blue-500 hover:underline">Understanding the Charts</a>
-          <a href="#getting-your-reports" className="text-blue-500 hover:underline">Getting Your Reports</a>
-          <a href="#downloading-the-app" className="text-blue-500 hover:underline">Downloading the App</a>
-          <a href="#share-timewise-with-others" className="text-blue-500 hover:underline">Share TimeWise with Others</a>
+      <div className="text-left col-span-4 lg:col-span-1">
+        <div className="static lg:sticky lg:top-[6rem] flex flex-col gap-4">
+          <h3 className="text-xl font-bold">Table of Contents</h3>
+          <a href="#important-reminders" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Important Reminders</a>
+          <a href="#getting-started" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Getting Started</a>
+          <a href="#understanding-the-charts" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Understanding the Charts</a>
+          <a href="#getting-your-reports" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Getting Your Reports</a>
+          <a href="#downloading-the-app" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Downloading the App</a>
+          <a href="#share-timewise-with-others" className="text-neutral-500 hover:text-neutral-300 transition-all duration-200 ease-in-out">Share TimeWise with Others</a>
         </div>
       </div>
     </div>
