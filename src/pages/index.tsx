@@ -17,17 +17,17 @@ export default function Home() {
         <h3 className="text-xl font-bold">How to access your data in a different device</h3>
         <p>Due to data is only stored locally in a specific device, you will not be able to view and access your data if you open this webapp in a different device. This means that your data will not sync to your other device.</p>
         <h3 className="text-xl font-bold">How large is the storage capacity</h3>
-        <p>This webapp can store up to 5MB of storage. 5MB may seem small, but it actually exceeds the practical use limits. If we assume 1 entry consumes 400 bytes, and you add 4 entries per week, it will take you around 60 years before you could actually maixmize the 5MB. To make the best use of your storage, follow the guide for adding time entries.</p>
+        <p>This webapp can store up to 5MB of storage. 5MB may seem small, but it actually exceeds the practical use limits. If we assume 1 entry consumes 400 bytes, and you add 4 entries per week, it will take you around 60 years before you could actually maximize the 5MB. To make the best use of your storage, follow the guide for adding time entries.</p>
         <h3 className="text-xl font-bold">How to avoid data loss</h3>
-        <p  id="getting-started">To avoid data loss, do not clear your browser's data. Clearing your browser's data will delete your existing records in this webapp.</p>
+        <p  id="getting-started">To avoid data loss, do not clear your browser&#39;s data. Clearing your browser&#39;s data will delete your existing records in this webapp.</p>
         <Separator />
         <h2 className="text-2xl font-bold">Getting Started</h2>
         <h3 className="text-xl font-bold">Adding time entries</h3>
         <p>To add a time entry, click the <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">+ Add Time</code> button located at the top-right of your screen. This button will prompt a drawer to set the date, type of ministry, number of hours, and optionally add the number of Bible studies conducted.</p>
         <div className="p-4 border text-foreground mt-4 bg-amber-50 border-amber-200 dark:bg-amber-950/50 dark:border-amber-950 rounded-md">
-          <p><strong>Important:</strong> It is recommended to only add 1 entry per day. This means that you don't need to segment your entry based on a type of ministry. For example, imagine in a day you had 2 hours of cart witnessing, 2 hours of conducting Bible studies, and 1 hour of house to house ministry. In total, you had 5 hours of ministry. Add your entry of 5 hours and select all the type of ministry you did for the day.</p>
+          <p><strong>Important:</strong> It is recommended to only add 1 entry per day. This means that you don&#39;t need to segment your entry based on a type of ministry. For example, imagine in a day you had 2 hours of cart witnessing, 2 hours of conducting Bible studies, and 1 hour of house to house ministry. In total, you had 5 hours of ministry. Add your entry of 5 hours and select all the type of ministry you did for the day.</p>
         </div>
-        <p>This method saves storage and more manageable in case you need to update your entry eventually. After finalizing your entry, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Save</code> to save your entry or <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Cancel</code> to discard it. That's it, you're done!</p>
+        <p>This method saves storage and more manageable in case you need to update your entry eventually. After finalizing your entry, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Save</code> to save your entry or <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Cancel</code> to discard it. That&#39;s it, you&#39;re done!</p>
         <h4 className="text-lg font-bold" >Date (Required)</h4>
         <p>Date is always set to the current day by default. If you need to go to a specific date, a date picker will open to choose a day, month, or year.</p>
         <h4 className="text-lg font-bold" >Type of Ministry (Required: Multiselect)</h4>
@@ -40,12 +40,12 @@ export default function Home() {
         <h3 className="text-xl font-bold">Updating time entries</h3>
         <p>
           To update an existing time entry, locate the entry you want to modify in your daily or monthly entries. Click the{" "}
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">✏️</code> (pencil) icon next to the entry. This action will open a dialog where you can update details. To confirm the update, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Save</code>. If you change your mind, click <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">Cancel</code> to keep the entry.
+          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">&#x270E;</code> (pencil) icon next to the entry. This action will open the same drawer used for adding entries, but with your existing data pre-filled. Make your desired changes and click &quot;Save&quot; to update or &quot;Cancel&quot; to keep the original entry.
         </p>
         <h3 className="text-xl font-bold">Deleting time entries</h3>
         <p>
           To delete an existing time entry, locate the entry you want to remove in your daily or monthly entries. Click the{" "}
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">🗑️</code> (trash) icon next to the entry. This action will open a confirmation dialog asking you to confirm the deletion.
+          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">&#x1F5D1;</code> (trash) icon next to the entry. This action will open a confirmation dialog asking you to confirm the deletion.
         </p>
         <div className="p-4 border text-foreground mt-4 bg-red-50 border-red-200 dark:bg-red-950/50 dark:border-red-950 rounded-md">
           <p>
@@ -85,7 +85,7 @@ export default function Home() {
             Open the app or messaging platform where you send your report to your group overseer.
           </li>
           <li>
-            Tap and hold the message input field, then select "Paste" when the option appears. Your report will appear in the message field.
+            Tap and hold the message input field, then select &quot;Paste&quot; when the option appears. Your report will appear in the message field.
           </li>
           <li>
             Send the message to share your report.
