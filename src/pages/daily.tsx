@@ -1,6 +1,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { Trash2 } from 'lucide-react';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -16,7 +17,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,15 +30,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EditButton } from "@/components/edit-button"
-import { TimeEntry, createBooleanFlags } from "@/types/time-entry"
-
-import { Trash2 } from 'lucide-react';
+import { TimeEntry } from "@/types/time-entry"
 import { Geist } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
+interface UpdatedTimeEntry extends Omit<TimeEntry, 'date'> {
+  date: Date;
+}
 
 export default function DailyPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
@@ -182,15 +184,16 @@ export default function DailyPage() {
                       others: entry.activities?.includes('Others') || false,
                       activities: entry.activities || []
                     }}
-                    onSave={(updatedEntry) => {
+                    onSave={(updatedEntry: UpdatedTimeEntry) => {
                       const entriesStr = localStorage.getItem('timeEntries');
                       if (entriesStr) {
                         const allEntries: TimeEntry[] = JSON.parse(entriesStr);
                         const updatedEntries = allEntries.map(e => {
                           if (e.date === entry.date) {
+                            const { date, ...rest } = updatedEntry;
                             return {
-                              ...updatedEntry,
-                              date: updatedEntry.date.toISOString()
+                              ...rest,
+                              date: date.toISOString()
                             };
                           }
                           return e;

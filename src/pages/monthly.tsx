@@ -30,7 +30,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
@@ -39,6 +38,10 @@ import { MonthlyChart } from "@/components/hour-month-chart";
 import { BibleStudiesCard } from "@/components/bs-month-stats-card";
 import { ActivityChart } from "@/components/activity-chart"
 import { TimeEntry } from "@/types/time-entry"
+
+interface UpdatedTimeEntry extends Omit<TimeEntry, 'date'> {
+  date: Date;
+}
 
 export default function MonthlyPage() {
   const [date, setDate] = React.useState<Date>(new Date())
@@ -82,14 +85,14 @@ export default function MonthlyPage() {
         const entriesStr = localStorage.getItem('timeEntries');
         if (entriesStr) {
           const allEntries = JSON.parse(entriesStr);
-          const monthEntries = allEntries.filter((entry: any) =>
+          const monthEntries = allEntries.filter((entry: TimeEntry) =>
             isSameMonth(new Date(entry.date), date)
           );
 
-          const hours = monthEntries.reduce((sum: number, entry: any) =>
+          const hours = monthEntries.reduce((sum: number, entry: TimeEntry) =>
             sum + (entry.ministryHours || 0), 0
           );
-          const studies = monthEntries.reduce((sum: number, entry: any) =>
+          const studies = monthEntries.reduce((sum: number, entry: TimeEntry) =>
             sum + (entry.bibleStudies || 0), 0
           );
 
@@ -214,26 +217,21 @@ export default function MonthlyPage() {
                       </div>
                       <div className="flex justify-start gap-2">
                         <EditButton
-                          entry={{
-                            date: format(new Date(entry.date), 'yyyy-MM-dd'),
-                            ministryHours: entry.ministryHours || 0,
-                            bibleStudies: entry.bibleStudies || 0,
-                            houseToHouse: entry.activities?.includes('House to House') || false,
-                            bibleStudy: entry.activities?.includes('Bible Study') || false,
-                            returnVisit: entry.activities?.includes('Return Visit') || false,
-                            cartWitnessing: entry.activities?.includes('Cart Witnessing') || false,
-                            letterWriting: entry.activities?.includes('Letter Writing') || false,
-                            informalWitnessing: entry.activities?.includes('Informal Witnessing') || false,
-                            others: entry.activities?.includes('Others') || false,
-                            activities: entry.activities || []
-                          }}
-                          onSave={(updatedEntry) => {
+                          entry={entry}
+                          onSave={(updatedEntry: UpdatedTimeEntry) => {
                             const entriesStr = localStorage.getItem('timeEntries');
                             if (entriesStr) {
                               const allEntries: TimeEntry[] = JSON.parse(entriesStr);
-                              const updatedEntries = allEntries.map(e =>
-                                e.date === entry.date ? { ...updatedEntry, date: format(updatedEntry.date, 'yyyy-MM-dd') } : e
-                              );
+                              const updatedEntries = allEntries.map(e => {
+                                if (e.date === entry.date) {
+                                  const { date, ...rest } = updatedEntry;
+                                  return {
+                                    ...rest,
+                                    date: date.toISOString().split('T')[0]
+                                  };
+                                }
+                                return e;
+                              });
                               localStorage.setItem('timeEntries', JSON.stringify(updatedEntries));
                               window.dispatchEvent(new Event('storage'));
                             }
@@ -252,10 +250,10 @@ export default function MonthlyPage() {
                                 This action cannot be undone.
                               </DialogDescription>
                             </DialogHeader>
-                            <DialogFooter>
+                            <DialogContent>
                               <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
                               <Button variant="destructive" onClick={() => handleDelete(entry)}>Delete</Button>
-                            </DialogFooter>
+                            </DialogContent>
                           </DialogContent>
                         </Dialog>
                       </div>

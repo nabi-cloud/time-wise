@@ -4,8 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
+import { TimeEntry } from "@/types/time-entry";
 
 import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
@@ -18,20 +18,8 @@ const geistSans = Geist({
 });
 
 interface EditButtonProps {
-  entry: {
-    date: string;
-    ministryHours: number;
-    bibleStudies: number;
-    houseToHouse: boolean;
-    bibleStudy: boolean;
-    returnVisit: boolean;
-    cartWitnessing: boolean;
-    letterWriting: boolean;
-    informalWitnessing: boolean;
-    others: boolean;
-    activities: string[];
-  };
-  onSave: (updatedEntry: any) => void;
+  entry: TimeEntry;
+  onSave: (updatedEntry: Omit<TimeEntry, 'date'> & { date: Date }) => void;
 }
 
 export function EditButton({ entry, onSave }: EditButtonProps) {
@@ -101,7 +89,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
     if (others) activities.push("Others");
 
     const updatedEntry = {
-      date: format(date, "yyyy-MM-dd"),
+      date,
       ministryHours,
       bibleStudies,
       houseToHouse,

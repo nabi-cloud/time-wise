@@ -2,7 +2,7 @@ import { toast } from "sonner"
 
 const MAX_LOCAL_STORAGE_SIZE = 5 * 1024 * 1024; // 5MB (typical localStorage limit)
 
-export const checkStorageQuota = (dataToAdd: any): boolean => {
+export const checkStorageQuota = (dataToAdd: Record<string, unknown>): boolean => {
     try {
         // Calculate size of all existing data
         let totalSize = 0;
