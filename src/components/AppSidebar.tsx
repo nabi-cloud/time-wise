@@ -74,7 +74,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Link href="https://github.com/nabi-cloud" target="new" onClick={handleLinkClick}>
+        <Link href="https://github.com/nabi-cloud/time-wise" target="new" onClick={handleLinkClick}>
           <button className="flex flex-row items-center gap-2 p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground w-full rounded-md">
             <div className="flex aspect-square size-5 items-center justify-center rounded bg-sidebar-primary text-sidebar-primary-foreground"><Github size={12} /></div>
             <div>

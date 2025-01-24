@@ -4,11 +4,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
+import { TimeEntry } from "@/types/time-entry";
 
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { useState, useEffect } from "react";
 import { Geist } from "next/font/google";
 
@@ -18,25 +18,13 @@ const geistSans = Geist({
 });
 
 interface EditButtonProps {
-  entry: {
-    date: Date;
-    ministryHours: number;
-    bibleStudies: number;
-    houseToHouse: boolean;
-    bibleStudy: boolean;
-    returnVisit: boolean;
-    cartWitnessing: boolean;
-    letterWriting: boolean;
-    informalWitnessing: boolean;
-    others: boolean;
-    activities: string[];
-  };
-  onSave: (updatedEntry: any) => void;
+  entry: TimeEntry;
+  onSave: (updatedEntry: Omit<TimeEntry, 'date'> & { date: Date }) => void;
 }
 
 export function EditButton({ entry, onSave }: EditButtonProps) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date>(entry.date);
+  const [date, setDate] = useState<Date>(parseISO(entry.date));
   const [ministryHours, setMinistryHours] = useState(entry.ministryHours || 0);
   const [bibleStudies, setBibleStudies] = useState(entry.bibleStudies || 0);
   const [houseToHouse, setHouseToHouse] = useState(entry.houseToHouse === true);
@@ -50,7 +38,7 @@ export function EditButton({ entry, onSave }: EditButtonProps) {
 
   // Reset state when entry changes
   useEffect(() => {
-    setDate(entry.date);
+    setDate(parseISO(entry.date));
     setMinistryHours(entry.ministryHours || 0);
     setBibleStudies(entry.bibleStudies || 0);
     setHouseToHouse(entry.houseToHouse === true);

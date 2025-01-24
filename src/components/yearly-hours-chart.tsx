@@ -7,7 +7,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter
 } from "@/components/ui/card"
 import {
   ChartConfig,
@@ -16,17 +15,12 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
+import { TimeEntry } from "@/types/time-entry"
+
 // Function to get total hours for a specific month
 type MonthName = 
   | "September" | "October" | "November" | "December" | "January" | "February"
   | "March" | "April" | "May" | "June" | "July" | "August";
-
-interface TimeEntry {
-  date: string;
-  ministryHours: number;
-  bibleStudies: number;
-  activities: string[];
-}
 
 interface YearlyChartProps {
   year: number;

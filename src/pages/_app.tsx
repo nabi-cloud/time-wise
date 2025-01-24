@@ -2,6 +2,7 @@ import * as React from "react"
 import "@/styles/globals.css";
 import { format } from "date-fns"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+import { registerServiceWorker } from "@/utils/pwaRegistration";
 
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
@@ -11,7 +12,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -86,6 +86,10 @@ export default function App({ Component, pageProps }: AppProps) {
     // Reset date to current date when route changes
     setDate(new Date());
   }, [Component]);
+
+  React.useEffect(() => {
+    registerServiceWorker();
+  }, []);
 
   const getSelectedMinistryCount = () => {
     return [houseToHouse, bibleStudy, returnVisit, cartWitnessing, 

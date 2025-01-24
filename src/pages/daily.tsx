@@ -1,6 +1,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { Trash2 } from 'lucide-react';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -16,7 +17,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,15 +30,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { EditButton } from "@/components/edit-button"
-import { TimeEntry, createBooleanFlags } from "@/types/time-entry"
-
-import { Trash2 } from 'lucide-react';
+import { TimeEntry } from "@/types/time-entry"
 import { Geist } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
+interface UpdatedTimeEntry extends Omit<TimeEntry, 'date'> {
+  date: Date;
+}
 
 export default function DailyPage() {
   const [date, setDate] = React.useState<Date | undefined>(new Date())
@@ -170,21 +172,28 @@ export default function DailyPage() {
                 <div className="flex justify-start gap-2">
                   <EditButton 
                     entry={{
-                      date: new Date(entry.date),
+                      date: entry.date,
                       ministryHours: entry.ministryHours || 0,
                       bibleStudies: entry.bibleStudies || 0,
-                      ...createBooleanFlags(entry.activities),
+                      houseToHouse: entry.activities?.includes('House to House') || false,
+                      bibleStudy: entry.activities?.includes('Bible Study') || false,
+                      returnVisit: entry.activities?.includes('Return Visit') || false,
+                      cartWitnessing: entry.activities?.includes('Cart Witnessing') || false,
+                      letterWriting: entry.activities?.includes('Letter Writing') || false,
+                      informalWitnessing: entry.activities?.includes('Informal Witnessing') || false,
+                      others: entry.activities?.includes('Others') || false,
                       activities: entry.activities || []
                     }}
-                    onSave={(updatedEntry) => {
+                    onSave={(updatedEntry: UpdatedTimeEntry) => {
                       const entriesStr = localStorage.getItem('timeEntries');
                       if (entriesStr) {
                         const allEntries: TimeEntry[] = JSON.parse(entriesStr);
                         const updatedEntries = allEntries.map(e => {
                           if (e.date === entry.date) {
+                            const { date, ...rest } = updatedEntry;
                             return {
-                              ...updatedEntry,
-                              date: updatedEntry.date.toISOString()
+                              ...rest,
+                              date: date.toISOString()
                             };
                           }
                           return e;
