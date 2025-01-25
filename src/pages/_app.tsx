@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { format } from "date-fns"
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import { registerServiceWorker } from "@/utils/pwaRegistration";
+import { Analytics } from "@vercel/analytics/react"
 
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
@@ -403,6 +404,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4">
             <Component {...pageProps} />
+            <Analytics />
             <Toaster richColors closeButton  />
           </div>
         </SidebarInset>
