@@ -257,7 +257,7 @@ export default function App({ Component, pageProps }: AppProps) {
                             {date ? format(date, "PPP") : <span>Pick a date</span>}
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
+                        <PopoverContent className="w-auto p-0 pointer-events-auto">
                           <Calendar
                             mode="single"
                             selected={date}
